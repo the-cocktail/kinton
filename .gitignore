@@ -1,0 +1,7 @@
+dist/
+build/
+*.egg-info/**
+*.log
+*.pyc
+*.retry
+*.zip
