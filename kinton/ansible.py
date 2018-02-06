@@ -8,12 +8,12 @@ from kinton.file_system import FileSystem
 
 class Ansible:
   ANSIBLE_DIR = '/ansible/'
-  PLAYBOOK_FILE = "playbook.yml"
   SCRIPT = "/bin/ansible.sh"
 
   THIS_DIR = os.path.dirname(os.path.abspath(__file__))  
 
-  def __init__(self, ansible_config, downloader, cmd_args):
+  def __init__(self, project_name, ansible_config, downloader, cmd_args):
+    self.project_name = project_name
     self.ansible_config = ansible_config
     self.downloader = downloader
     self.cmd_args = self.parse_args(cmd_args)
@@ -47,6 +47,17 @@ class Ansible:
 
       command.append("-u")
       command.append(self.ansible_config["remote_user"])
+
+      command.append("-e")
+      command.append("ansible_user=" + self.ansible_config["remote_user"])
+
+      command.append("-e")
+      command.append("ansible_ssh_user=" + self.ansible_config["remote_user"])           
+
+      certificate_path = "certificates/" + self.project_name + ".pem"
+      if os.path.exists(certificate_path):
+        current_path = os.getcwd()
+        command.append("--private-key=" +  current_path + "/" + certificate_path)  
             
       subprocess.run(command)
 
