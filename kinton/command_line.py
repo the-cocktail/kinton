@@ -27,7 +27,7 @@ def execute_ansible(args):
 
     downloader = GithubDownloader(project["github"])
 
-    ansible = Ansible(project["ansible"], downloader, args)
+    ansible = Ansible(project["name"], project["ansible"], downloader, args)
     ansible.run()
 
 def get_projects():

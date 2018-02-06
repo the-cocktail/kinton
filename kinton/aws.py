@@ -1,5 +1,6 @@
 import os
 import datetime
+from pathlib import Path
 from jinja2 import Environment
 from jinja2 import FileSystemLoader
 
@@ -13,7 +14,8 @@ class Aws:
     rendered_file = template.render(aws_access_key_id=aws_config["aws_access_key_id"], 
                                     aws_secret_access_key=aws_config["aws_secret_access_key"],
                                     region=aws_config["region"],
-                                    now=datetime.datetime.utcnow()) 
-    file_out = open("/Users/jesus.sayar/.aws/credentials", "w")
+                                    now=datetime.datetime.utcnow())
+    home_path = str(Path.home())
+    file_out = open(home_path + "/.aws/credentials", "w")
     file_out.write(rendered_file)
     file_out.close()

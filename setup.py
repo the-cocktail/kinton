@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='kinton',
-      version='0.1.1',
+      version='0.1.2',
       description='This is the perfect tool if you want run the same tasks in servers in AWS and Google Cloud with only one comand.',
       long_description="Kinton is a software that automates software provisioning and configuration management when you have servers in different cloud computing providers or in different cloud computing accounts in the same provider. This is the perfect tool if you want run the same tasks in servers in AWS and Google Cloud with only one comand.",
       classifiers=[
