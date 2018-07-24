@@ -1,6 +1,5 @@
 import sys
 from kinton.configuration                    import Configuration
-from kinton.github_downloader                import GithubDownloader
 from kinton.cloud                            import Cloud
 from kinton.ansible                          import Ansible
 from kinton.printer                          import Printer
@@ -16,18 +15,15 @@ def main():
     execute_ansible(args)
 
 def execute_ansible(args):
-  projects = get_projects()    
+  projects = get_projects() 
 
   for project in projects:
     printer = Printer(project)
     printer.puts_basic_info()
-    
     cloud = Cloud(project)
     cloud.configure()
 
-    downloader = GithubDownloader(project["github"])
-
-    ansible = Ansible(project["name"], project["ansible"], downloader, args)
+    ansible = Ansible(project["name"], project["ansible"], args)
     ansible.run()
 
 def get_projects():
