@@ -4,7 +4,7 @@ from termcolor import cprint
 from kinton.configuration import Configuration
 from kinton.cloud import Cloud
 from kinton.file_system import FileSystem
-
+from kinton.ansible_config import AnsibleConfig
 
 class Ansible:
   ANSIBLE_DIR = '/ansible/'
@@ -13,13 +13,10 @@ class Ansible:
   THIS_DIR = os.path.dirname(os.path.abspath(__file__))  
   INVENTORIES_DIR = os.getcwd() + "/inventories/"
 
-  def __init__(self, project_name, ansible_config, cmd_args):
+  def __init__(self, project_name, config, cmd_args):
     self.project_name = project_name
-    self.ansible_config = ansible_config
+    self.config = config
     self.cmd_args = cmd_args
-
-    self.tmp_dir = Configuration.kinton["defaults"]["tmp_dir"]
-    self.settings = Configuration.kinton["defaults"]["ansible"]
 
   def run(self):
     self.execute_command()
@@ -28,23 +25,27 @@ class Ansible:
     inventories = self.get_inventories()
     for inventory in inventories:
       inventory_path = self.get_inventories_path() + inventory
-      self.execute_command_with_inventory(inventory_path)
+      ansible_config = AnsibleConfig(inventory_path)
+      ansible_config.create()
+      self.execute_command_with_inventory(inventory_path, ansible_config.exists_bastion())
+      #ansible_config.delete()
 
-  def execute_command_with_inventory(self, inventory_path):
+  def execute_command_with_inventory(self, inventory_path, exists_bastion):
     script_path = self.THIS_DIR + self.SCRIPT
     command = ["/bin/bash", script_path, inventory_path]
   
     for arg in self.cmd_args:
       command.append(arg)
 
-    command.append("-u")
-    command.append(self.ansible_config["remote_user"])
+    if not exists_bastion:
+      command.append("-u")
+      command.append(self.config["remote_user"])
 
-    command.append("-e")
-    command.append("ansible_user=" + self.ansible_config["remote_user"])
+      command.append("-e")
+      command.append("ansible_user=" + self.config["remote_user"])
 
-    command.append("-e")
-    command.append("ansible_ssh_user=" + self.ansible_config["remote_user"])           
+      command.append("-e")
+      command.append("ansible_ssh_user=" + self.config["remote_user"])           
 
     certificate_path = "certificates/" + self.project_name + ".pem"
     if os.path.exists(certificate_path):

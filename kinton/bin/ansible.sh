@@ -5,6 +5,6 @@ echo $@
 
 shift
 chmod +x $INVENTORY_FILE
-#echo "ansible-playbook -i ${INVENTORY_FILE} $@"
+echo "ANSIBLE_CONFIG=/tmp/kinton_ansible.cfg ansible-playbook -i ${INVENTORY_FILE} $@"
 
-ansible-playbook -i ${INVENTORY_FILE} "$@"
+ANSIBLE_CONFIG=/tmp/kinton_ansible.cfg ansible-playbook -i ${INVENTORY_FILE} "$@"
