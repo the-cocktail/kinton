@@ -10,8 +10,9 @@ class AnsibleConfig:
   ANSIBLE_CONFIG_PATH = '/tmp/kinton_ansible.cfg'
   SSH_CONFIG_PATH = '/tmp/kinton_ssh.cfg'
 
-  def __init__(self, inventoy_path):
+  def __init__(self, inventoy_path, remote_user):
     self.inventoy_path = inventoy_path
+    self.remote_user = remote_user
     self.server_ips = self.get_server_ips()
   
   def create(self):
@@ -32,7 +33,7 @@ class AnsibleConfig:
     j2_env = Environment(loader=FileSystemLoader(self.THIS_DIR +'/templates'), trim_blocks=True)
     template = j2_env.get_template('ssh.cfg.j2') 
 
-    rendered_file = template.render(bastion_ip=self.server_ips["bastion"][0]) 
+    rendered_file = template.render(bastion_ip=self.server_ips["bastion"][0],remote_user=self.remote_user) 
     file_out = open(self.SSH_CONFIG_PATH, "w")
     file_out.write(rendered_file)
     file_out.close()

@@ -25,10 +25,10 @@ class Ansible:
     inventories = self.get_inventories()
     for inventory in inventories:
       inventory_path = self.get_inventories_path() + inventory
-      ansible_config = AnsibleConfig(inventory_path)
+      ansible_config = AnsibleConfig(inventory_path, self.config["remote_user"])
       ansible_config.create()
       self.execute_command_with_inventory(inventory_path, ansible_config.exists_bastion())
-      #ansible_config.delete()
+      ansible_config.delete()
 
   def execute_command_with_inventory(self, inventory_path, exists_bastion):
     script_path = self.THIS_DIR + self.SCRIPT
