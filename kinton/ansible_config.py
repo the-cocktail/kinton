@@ -40,7 +40,8 @@ class AnsibleConfig:
 
   def get_server_ips(self):
     result = subprocess.run([self.inventoy_path], stdout=subprocess.PIPE)
-    data = json.loads(result.stdout)
+    print(result.stdout.decode("utf-8"))
+    data = json.loads(result.stdout.decode("utf-8"))
     return data
 
   def exists_bastion(self):

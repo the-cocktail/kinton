@@ -14,6 +14,6 @@ class Aws:
                                     aws_secret_access_key=aws_config["aws_secret_access_key"],
                                     region=aws_config["region"],
                                     now=datetime.datetime.utcnow()) 
-    file_out = open("/Users/jesus.sayar/.aws/credentials", "w")
+    file_out = open("/home/ichasco/.aws/credentials", "w")
     file_out.write(rendered_file)
     file_out.close()
