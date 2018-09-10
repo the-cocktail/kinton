@@ -1,0 +1,9 @@
+[defaults]
+nocows = 1
+host_key_checking = False
+
+[ssh_connection]
+pipelining=True
+ssh_args = -F {{ ssh_config_path }} -o ControlMaster=auto -o ControlPersist=30m -o StrictHostKeyChecking=no
+control_path = %(directory)s/%%h-%%r
+host_key_checking = False

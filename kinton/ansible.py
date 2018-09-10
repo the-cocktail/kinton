@@ -4,65 +4,66 @@ from termcolor import cprint
 from kinton.configuration import Configuration
 from kinton.cloud import Cloud
 from kinton.file_system import FileSystem
-
+from kinton.ansible_config import AnsibleConfig
 
 class Ansible:
   ANSIBLE_DIR = '/ansible/'
   SCRIPT = "/bin/ansible.sh"
 
   THIS_DIR = os.path.dirname(os.path.abspath(__file__))  
+  INVENTORIES_DIR = os.getcwd() + "/inventories/"
 
-  def __init__(self, project_name, ansible_config, downloader, cmd_args):
+  def __init__(self, project_name, config, cmd_args):
     self.project_name = project_name
-    self.ansible_config = ansible_config
-    self.downloader = downloader
-    self.cmd_args = self.parse_args(cmd_args)
-
-    self.tmp_dir = Configuration.kinton["defaults"]["tmp_dir"]
-    self.settings = Configuration.kinton["defaults"]["ansible"]
+    self.config = config
+    self.cmd_args = cmd_args
 
   def run(self):
-    self.create_temp_folder()
-    self.download_temp_files()
     self.execute_command()
-    self.remove_temp_folder()
-
-  def create_temp_folder(self):
-    FileSystem.create_folder(self.tmp_dir)
-
-  def download_temp_files(self):
-    exclude_dirs = self.settings["exclude_dirs"]
-    if "exclude_dirs" in self.ansible_config:
-      exclude_dirs += self.ansible_config["exclude_dirs"]
-    self.downloader.get_folder(self.ansible_config["ansible_dir"], exclude_dirs=exclude_dirs)
   
   def execute_command(self):
-    for inventory in self.ansible_config["inventories"]:
-      ansible_dir = self.tmp_dir + self.ansible_config['ansible_dir']
-      script_path = self.THIS_DIR + self.SCRIPT
-      command = ["/bin/bash", script_path, ansible_dir, inventory]
-    
-      for arg in self.cmd_args:
-        command.append(arg)
+    inventories = self.get_inventories()
+    for inventory in inventories:
+      inventory_path = self.get_inventories_path() + inventory
+      ansible_config = AnsibleConfig(inventory_path, self.config["remote_user"])
+      ansible_config.create()
+      self.execute_command_with_inventory(inventory_path, ansible_config.exists_bastion())
+      ansible_config.delete()
 
+  def execute_command_with_inventory(self, inventory_path, exists_bastion):
+    script_path = self.THIS_DIR + self.SCRIPT
+    command = ["/bin/bash", script_path, inventory_path]
+  
+    for arg in self.cmd_args:
+      command.append(arg)
+
+    if not exists_bastion:
       command.append("-u")
-      command.append(self.ansible_config["remote_user"])
 
       command.append("-e")
-      command.append("ansible_user=" + self.ansible_config["remote_user"])
+      command.append("ansible_user=" + self.config["remote_user"])
 
       command.append("-e")
-      command.append("ansible_ssh_user=" + self.ansible_config["remote_user"])           
+      command.append("ansible_ssh_user=" + self.config["remote_user"])           
 
-      certificate_path = "certificates/" + self.project_name + ".pem"
-      if os.path.exists(certificate_path):
-        current_path = os.getcwd()
-        command.append("--private-key=" +  current_path + "/" + certificate_path)  
-            
-      subprocess.run(command)
+    certificate_path = "certificates/" + self.project_name + ".pem"
+    if os.path.exists(certificate_path):
+      current_path = os.getcwd()
+      command.append("--private-key=" +  current_path + "/" + certificate_path)  
+    
+    subprocess.run(command)
 
-  def remove_temp_folder(self):
-    FileSystem.remove_folder(self.tmp_dir)
+  def get_inventories(self):
+    from os import listdir
+    from os.path import isfile, join
+    inventories_path = self.get_inventories_path()
+    onlyfiles = [f for f in listdir(inventories_path) if isfile(join(inventories_path, f))]
+
+    return onlyfiles
+
+
+  def get_inventories_path(self):
+    return self.INVENTORIES_DIR + self.project_name + "/"
 
   def parse_args(self, cmd_args):
     for index, item in enumerate(cmd_args):

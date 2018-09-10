@@ -10,7 +10,7 @@ class Cloud:
 
   def configure(self):
     if "aws" in self.project_config["cloud"]:
-      aws_config = Configuration.aws_secrets[self.project_config["name"]]
+      aws_config = Configuration.aws_secrets[self.project_config["cloud"]["aws"]]
       Aws.switch_account(aws_config)
     elif "google" in self.project_config["cloud"]:
       google_config = self.project_config["cloud"]["google"]
