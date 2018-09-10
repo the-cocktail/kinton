@@ -1,0 +1,18 @@
+Host 10.*
+  ProxyCommand ssh -F {{ ssh_config_path }} -W %h:%p %r@{{ bastion_ip }}
+  IdentityFile ~/.ssh/id_rsa
+  User {{ remote_user }}
+  UserKnownHostsFile=/dev/null
+  StrictHostKeyChecking no
+  ForwardAgent yes
+
+Host {{ bastion_ip }}
+  User {{ remote_user }}
+  UserKnownHostsFile=/dev/null
+  IdentityFile ~/.ssh/id_rsa
+  ControlMaster auto
+  ControlPath /tmp/ansible-%r@%h:%p
+  ControlPersist 5m
+  UserKnownHostsFile=/dev/null
+  StrictHostKeyChecking no
+  ForwardAgent yes	

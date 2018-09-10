@@ -37,16 +37,6 @@ class Ansible:
     for arg in self.cmd_args:
       command.append(arg)
 
-    if not exists_bastion:
-      command.append("-u")
-      command.append(self.config["remote_user"])
-
-      command.append("-e")
-      command.append("ansible_user=" + self.config["remote_user"])
-
-      command.append("-e")
-      command.append("ansible_ssh_user=" + self.config["remote_user"])           
-
     certificate_path = "certificates/" + self.project_name + ".pem"
     if os.path.exists(certificate_path):
       current_path = os.getcwd()

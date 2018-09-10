@@ -16,9 +16,8 @@ class AnsibleConfig:
     self.server_ips = self.get_server_ips()
   
   def create(self):
-    if self.exists_bastion():
-      self.create_ansible_config()
-      self.create_ssh_config()
+    self.create_ansible_config()
+    self.create_ssh_config()
 
   def create_ansible_config(self):
     j2_env = Environment(loader=FileSystemLoader(self.THIS_DIR +'/templates'), trim_blocks=True)
@@ -31,9 +30,12 @@ class AnsibleConfig:
 
   def create_ssh_config(self):
     j2_env = Environment(loader=FileSystemLoader(self.THIS_DIR +'/templates'), trim_blocks=True)
-    template = j2_env.get_template('ssh.cfg.j2') 
-
-    rendered_file = template.render(bastion_ip=self.server_ips["bastion"][0],remote_user=self.remote_user) 
+    if self.exists_bastion():
+      template = j2_env.get_template('ssh_bastion.cfg.j2') 
+      rendered_file = template.render(ssh_config_path=self.SSH_CONFIG_PATH, bastion_ip=self.server_ips["bastion"][0],remote_user=self.remote_user) 
+    else:
+      template = j2_env.get_template('ssh.cfg.j2') 
+      rendered_file = template.render(ssh_config_path=self.SSH_CONFIG_PATH, remote_user=self.remote_user)
     file_out = open(self.SSH_CONFIG_PATH, "w")
     file_out.write(rendered_file)
     file_out.close()
