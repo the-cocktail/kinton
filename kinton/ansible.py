@@ -39,6 +39,7 @@ class Ansible:
 
     if not exists_bastion:
       command.append("-u")
+      command.append(self.config["remote_user"])
 
       command.append("-e")
       command.append("ansible_user=" + self.config["remote_user"])
