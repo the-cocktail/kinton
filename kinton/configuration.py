@@ -9,8 +9,6 @@ class Configuration:
   aws_secrets = None
 
   def load():
-    with open("kinton.yml", 'r') as ymlfile:
-        Configuration.kinton = yaml.load(ymlfile)
     with open("projects.yml", 'r') as ymlfile:
         Configuration.projects = yaml.load(ymlfile)
     with open("aws_secrets.yml", 'r') as ymlfile:
