@@ -14,7 +14,7 @@ class ConfigFiles:
     ConfigFiles.create_folders()
 
   def create_files():
-    files = ["kinton.yml", "projects.yml", "aws_secrets.yml"]
+    files = ["projects.yml", "aws_secrets.yml"]
     for filename in files:   
       the_file = Path(filename)
       if the_file.exists():
@@ -45,7 +45,7 @@ class ConfigFiles:
     file_out.close()    
 
   def create_folders():
-    folders = ["certificates"]
+    folders = ["certificates", "inventories"]
     for foldername in folders:   
       the_folder = Path(foldername)
       if the_folder.exists():

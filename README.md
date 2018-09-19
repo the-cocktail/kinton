@@ -19,17 +19,6 @@ Init configuration files.
 
 Then you can complete this files with your configuration:
 
-### kinton.yml
-
-This file have the basic settings.
-
-| Key  | Description |
-| ---  | ----------- |
-| github_token | Your GitHub token.  |
-| defaults.tmp_dir  | Temporary folder used by Kinton. |
-| defaults.ansible.exclude_dirs  | Excluded folders when Kinton download the ansible folder from your repositories. |
-
-
 ### projects.yml
 
 This file contains a list with all projects that you want management.
@@ -38,11 +27,7 @@ This file contains a list with all projects that you want management.
 | ---  | ----------- |
 | project_name  | Descriptive project name.  |
 | enabled  | If `True` this projects is management, if `False` the project is not management. |
-| github.organization  | GitHub Organization name of your respository. |
-| github.respository  | GitHub Repository name. |
 | ansible.remote_user  | Remote user used in your servers. |
-| ansible.ansible_dir  | Relative path to ansible config folder in the repository. |
-| ansible.inventories  | Relative paths to the Ansible enventory files in the ansible directory. This determine which server provision. |
 | ansible.cloud.aws  | If you use AWS cloud platform. |
 | ansible.cloud.google  | If you use Google Cloud platform. |
 | ansible.cloud.google.project_id  | Project ID in the Google Cloud platform. |
@@ -51,17 +36,9 @@ This file contains a list with all projects that you want management.
 This is a basic example for a fictitious project hosted in https://github.com/the-cocktail/fictitious_app.
 
 ```
-fictitious_app:
+fictitious_project:
   enabled: True
-  github:
-    organization: "the-cocktail"
-    respository: "fictitious_app"
-  ansible:
-    remote_user: "ubuntu"
-    ansible_dir: "infrastructure/ansible"
-    inventories:
-      - "staging/inventory"
-      - "production/inventory"       
+    remote_user: "ubuntu"    
   cloud:
     aws:
 ```
@@ -78,7 +55,7 @@ If you have servers in AWS you need this file with the API credentials.
 | region | AWS region used for your servers|
 
 ```
-fictitious_app:
+fictitious_project:
   aws_access_key_id: "XXX"
   aws_secret_access_key: "XXX"
   region: "eu-west-1"
