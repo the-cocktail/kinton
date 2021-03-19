@@ -23,7 +23,7 @@ setup(name='kinton',
           'ipdb==0.10.3',
           'termcolor==1.1.0',
           'pygithub==1.35',
-          'Jinja2==2.9.6'
+          'Jinja2==2.11.3'
       ],
       entry_points = {
         'console_scripts': ['kinton=kinton.command_line:main'],
