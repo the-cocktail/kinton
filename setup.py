@@ -19,7 +19,7 @@ setup(name='kinton',
       license='MIT',
       packages=['kinton'],
       install_requires=[
-          'PyYAML==3.12',
+          'PyYAML==5.4',
           'ipdb==0.10.3',
           'termcolor==1.1.0',
           'pygithub==1.35',
